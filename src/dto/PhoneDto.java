@@ -6,11 +6,11 @@ public class PhoneDto {
     private int phone_id;
     private String model;
     private String brand;
-    private Date released_at;
+    private java.sql.Date released_at;
     private int price;
     private int stock;
 
-    public PhoneDto (int phone_id, String model, String brand, Date released_at, int price, int stock) {
+    public PhoneDto (int phone_id, String model, String brand, java.sql.Date released_at, int price, int stock) {
         this.phone_id = phone_id;
         this.model = model;
         this.brand = brand;
@@ -47,7 +47,7 @@ public class PhoneDto {
         return released_at;
     }
 
-    public void setReleased_at(Date released_at) {
+    public void setReleased_at(java.sql.Date released_at) {
         this.released_at = released_at;
     }
 
