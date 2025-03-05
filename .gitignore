@@ -1,0 +1,61 @@
+# ☑️ 기본적인 Java 관련 무시할 파일
+*.class
+*.jar
+*.war
+*.ear
+
+# ☑️ 빌드 시스템(Gradle, Maven) 관련
+target/
+out/
+*.log
+*.iml
+*.ipr
+*.iws
+.mvn/
+.gradle/
+build/
+
+# ☑️ IDE 설정 파일 (IntelliJ, Eclipse 등)
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+/.metadata/
+/bin/
+/.settings/
+/.project
+/.classpath
+/.factorypath
+
+# ☑️ 환경 변수 및 보안 파일
+.env
+*.properties
+*.db
+*.sqlite
+*.sql
+
+# ☑️ OS에서 자동 생성되는 파일
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ☑️ MySQL 데이터베이스 관련 백업 파일
+*.sql
+*.dump
+
+# ☑️ 실행 파일 및 기타 무시할 파일
+*.exe
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar.gz
+*.rar
+
+# ☑️ 로그 및 임시 파일
+logs/
+*.log
+hs_err_pid*
