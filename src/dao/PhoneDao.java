@@ -62,4 +62,34 @@ public class PhoneDao {
 
         return ret;
     }
+
+    public int updatePhone(PhoneDto phone) {
+        int ret = -1;
+        String query = "UPDATE phone SET model = ?, brand = ?, released_At = ?, price = ?, stock = ? WHERE phone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setString(1, phone.getModel());
+            pstmt.setString(2, phone.getBrand());
+            pstmt.setDate(3, phone.getReleased_at());
+            pstmt.setInt(4, phone.getPrice());
+            pstmt.setInt(5, phone.getStock());
+            pstmt.setInt(6, phone.getPhone_id());
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
 }
