@@ -1,12 +1,12 @@
 package dto;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class PhoneDto {
     private int phone_id;
     private String model;
     private String brand;
-    private java.sql.Date released_at;
+    private Date released_at;
     private int price;
     private int stock;
 
