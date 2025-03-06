@@ -1,4 +1,4 @@
-package ui;
+package ui.admin;
 
 import dao.OrderDao;
 import dto.OrderDto;

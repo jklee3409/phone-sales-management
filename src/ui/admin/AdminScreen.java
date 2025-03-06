@@ -1,7 +1,8 @@
-package ui;
+package ui.admin;
 
 import javax.swing.*;
 import java.awt.*;
+import ui.StockViewScreen;
 
 public class AdminScreen extends JFrame {
     public AdminScreen() {
@@ -16,9 +17,9 @@ public class AdminScreen extends JFrame {
         JButton registerButton = new JButton("스마트폰 등록");
         JButton orderButton = new JButton("주문 조회");
 
-//        stockButton.addActionListener(e -> new StockViewScreen());
-//        registerButton.addActionListener(e -> new PhoneRegisterScreen());
-//        orderButton.addActionListener(e -> new OrderViewScreen());
+        stockButton.addActionListener(e -> new StockViewScreen());
+        registerButton.addActionListener(e -> new PhoneRegisterScreen());
+        orderButton.addActionListener(e -> new OrderViewScreen());
 
         add(stockButton);
         add(registerButton);
