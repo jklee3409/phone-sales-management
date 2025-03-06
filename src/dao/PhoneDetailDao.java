@@ -126,4 +126,39 @@ public class PhoneDetailDao {
 
         return list;
     }
+
+    public PhoneDetailDto getPhoneDetail(int phone_id) {
+        PhoneDetailDto phoneDetail = null;
+        String query = "SELECT * FROM phone_detail WHERE phone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, phone_id);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                phoneDetail = new PhoneDetailDto(
+                        rs.getInt("phone_id"),
+                        rs.getString("processor"),
+                        rs.getString("ram"),
+                        rs.getString("storage"),
+                        rs.getInt("battery"),
+                        rs.getInt("weight")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return phoneDetail;
+    }
 }
