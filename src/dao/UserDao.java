@@ -61,4 +61,30 @@ public class UserDao {
 
         return ret;
     }
+
+    public int updateAmount(int user_id, int amount) {
+        int ret = -1;
+        String query = "UPDATE user SET amount = ? WHERE user_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, user_id);
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
 }
