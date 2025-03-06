@@ -61,4 +61,33 @@ public class OrderDao {
 
         return ret;
     }
+
+    public int updateOrder(OrderDto order) {
+        int ret = -1;
+        String query = "UPDATE orders SET user_id = ?, phone_id = ?, sale_price = ?, order_date = ? WHERE order_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setInt(1, order.getUser_id());
+            pstmt.setInt(2, order.getPhone_id());
+            pstmt.setInt(3, order.getSale_price());
+            pstmt.setDate(4, order.getOrder_date());
+            pstmt.setInt(5, order.getOrder_id());
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
 }
