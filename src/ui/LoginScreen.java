@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import ui.admin.AdminScreen;
 
 public class LoginScreen extends JFrame {
     private JTextField usernameField;
@@ -43,7 +44,7 @@ public class LoginScreen extends JFrame {
 
         // 버튼 이벤트 추가
         loginButton.addActionListener(new LoginAction());
-        registerButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "회원가입 화면으로 이동"));
+        registerButton.addActionListener(e -> new RegisterScreen());
 
         setVisible(true);
     }
@@ -72,14 +73,10 @@ public class LoginScreen extends JFrame {
             if (UserDao.authenticateUser(username, password)) {
                 JOptionPane.showMessageDialog(LoginScreen.this, "로그인 성공!");
                 dispose();  // 현재 창 닫기
-                new PurchaseScreen(username);  // 구매 화면으로 이동
+                // new PurchaseScreen(username);  // 구매 화면으로 이동
             } else {
                 JOptionPane.showMessageDialog(LoginScreen.this, "로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
             }
         }
-    }
-
-    public static void main(String[] args) {
-        new LoginScreen();
     }
 }
