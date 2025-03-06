@@ -13,6 +13,8 @@ import ui.common.PhoneDetailViewScreen;
 
 public class StockViewScreen extends JFrame {
     private PhoneDao phoneDao = new PhoneDao();
+    private DefaultTableModel tableModel;
+    private JTable table;
 
     public StockViewScreen() {
         setTitle("재고 조회");
@@ -21,18 +23,18 @@ public class StockViewScreen extends JFrame {
         setLocationRelativeTo(null);
 
         String[] columnNames = {"ID", "모델명", "브랜드", "출시일", "가격", "재고"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
+        tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // 셀 편집 불가
             }
         };
 
-        JTable table = new JTable(tableModel);
+        table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
 
-        loadStockData(tableModel);
+        loadStockData();
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -41,7 +43,7 @@ public class StockViewScreen extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         int phoneId = (int) table.getValueAt(selectedRow, 0); // 첫 번째 열(phone_id) 가져오기
-                        new PhoneDetailViewScreen(phoneId, null, false, true); // 관리자 모드, 구매 불가
+                        new PhoneDetailViewScreen(phoneId, null, StockViewScreen.this,false, true);
                     }
                 }
             }
@@ -50,7 +52,12 @@ public class StockViewScreen extends JFrame {
         setVisible(true);
     }
 
-    private void loadStockData(DefaultTableModel tableModel) {
+    public void updateStockView() {
+        loadStockData();
+    }
+
+    private void loadStockData() {
+        tableModel.setRowCount(0);
         List<PhoneDto> phones = phoneDao.listPhone();
 
         for (PhoneDto phone : phones) {

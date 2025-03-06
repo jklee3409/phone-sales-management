@@ -11,6 +11,7 @@ import dto.UserDto;
 import javax.swing.*;
 import java.awt.*;
 import ui.admin.PhoneEditScreen;
+import ui.admin.StockViewScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
     private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
@@ -18,24 +19,66 @@ public class PhoneDetailViewScreen extends JFrame {
     private UserDao userDao = new UserDao();
     private OrderDao orderDao = new OrderDao();
 
-    public PhoneDetailViewScreen(int phoneId, UserDto user, boolean isPurchaseMode, boolean isAdmin) {
+    public PhoneDetailViewScreen(int phoneId, UserDto user, StockViewScreen stockViewScreen, boolean isPurchaseMode, boolean isAdmin) {
         setTitle("스마트폰 상세 정보");
         setSize(420, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
         PhoneDto phone = phoneDao.getPhone(phoneId);
         PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phoneId);
 
-        if (phone == null || phoneDetail == null) {
-            JOptionPane.showMessageDialog(this, "해당 스마트폰 정보를 찾을 수 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
-            dispose();
-            return;
+        JPanel container = createContainer(phone, phoneDetail);
+
+        if (isPurchaseMode) {
+            JButton purchaseButton = new JButton("구매하기");
+            purchaseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            purchaseButton.addActionListener(e -> purchasePhone(phone, user));
+            container.add(Box.createRigidArea(new Dimension(0, 10)));
+            container.add(purchaseButton);
         }
+
+        if (isAdmin) {
+            JButton editButton = new JButton("수정하기");
+            editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id(), stockViewScreen,this));
+            container.add(Box.createRigidArea(new Dimension(0, 10)));
+            container.add(editButton);
+        }
+
+        JButton closeButton = new JButton("닫기");
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> dispose());
+        container.add(Box.createRigidArea(new Dimension(0, 10)));
+        container.add(closeButton);
+
+        add(container);
+        setVisible(true);
+    }
+
+    public void updatePhoneDetail(PhoneDto phone) {
+        getContentPane().removeAll(); // 기존 UI 제거 후 재구성
+        repaint();
+        revalidate();
+
+        PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phone.getPhone_id());
+        JPanel container = createContainer(phone, phoneDetail);
+
+        JButton closeButton = new JButton("닫기");
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> dispose());
+        container.add(Box.createRigidArea(new Dimension(0, 10)));
+        container.add(closeButton);
+
+        getContentPane().add(container);
+        repaint();
+        revalidate();
+    }
+
+    private JPanel createContainer(PhoneDto phone, PhoneDetailDto phoneDetail) {
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JLabel titleLabel = new JLabel(phone.getModel() + " (" + phone.getBrand() + ")");
         titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
@@ -54,30 +97,7 @@ public class PhoneDetailViewScreen extends JFrame {
         container.add(createInfoPanel("배터리", phoneDetail.getBattery() + " mAh"));
         container.add(createInfoPanel("무게", phoneDetail.getWeight() + " g"));
 
-        if (isPurchaseMode) {
-            JButton purchaseButton = new JButton("구매하기");
-            purchaseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            purchaseButton.addActionListener(e -> purchasePhone(phone, user));
-            container.add(Box.createRigidArea(new Dimension(0, 10)));
-            container.add(purchaseButton);
-        }
-
-        if (isAdmin) {
-            JButton editButton = new JButton("수정하기");
-            editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id()));
-            container.add(Box.createRigidArea(new Dimension(0, 10)));
-            container.add(editButton);
-        }
-
-        JButton closeButton = new JButton("닫기");
-        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        closeButton.addActionListener(e -> dispose());
-        container.add(Box.createRigidArea(new Dimension(0, 10)));
-        container.add(closeButton);
-
-        add(container);
-        setVisible(true);
+        return container;
     }
 
     // 정보 패널을 생성

@@ -57,7 +57,7 @@ public class PurchaseScreen extends JFrame {
                     int selectedRow = phoneTable.getSelectedRow();
                     if (selectedRow != -1) {
                         int phoneId = (int) tableModel.getValueAt(selectedRow, 0);
-                        new PhoneDetailViewScreen(phoneId, user, true, false); // 구매 가능 모드, 관리자 아님
+                        new PhoneDetailViewScreen(phoneId, user, null,true, false); // 구매 가능 모드, 관리자 아님
                         updateUI();
                     }
                 }

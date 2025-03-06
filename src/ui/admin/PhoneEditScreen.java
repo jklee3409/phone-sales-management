@@ -5,13 +5,18 @@ import dto.PhoneDetailDto;
 
 import javax.swing.*;
 import java.sql.Date;
+import ui.common.PhoneDetailViewScreen;
 
 public class PhoneEditScreen extends PhoneBaseScreen {
     private int phoneId;
+    private PhoneDetailViewScreen detailViewScreen;
+    private StockViewScreen stockViewScreen;
 
-    public PhoneEditScreen(int phoneId) {
+    public PhoneEditScreen(int phoneId,StockViewScreen stockViewScreen, PhoneDetailViewScreen detailViewScreen) {
         super("스마트폰 정보 수정");
         this.phoneId = phoneId;
+        this.stockViewScreen = stockViewScreen;
+        this.detailViewScreen = detailViewScreen;
         addActionButton("수정하기");
         loadPhoneData();
         setVisible(true);
@@ -62,6 +67,17 @@ public class PhoneEditScreen extends PhoneBaseScreen {
             if (phoneDao.updatePhone(phone) > 0 && phoneDetailDao.updatePhoneDetail(phoneDetail) > 0) {
                 JOptionPane.showMessageDialog(this, "스마트폰 정보 수정 완료!");
                 dispose();
+
+                // 디테일 화면 업데이트
+                if (detailViewScreen != null) {
+                    detailViewScreen.updatePhoneDetail(phone);
+                }
+
+                // 재고 조회 화면 업데이트
+                if (stockViewScreen != null) {
+                    stockViewScreen.updateStockView();
+                }
+
             } else {
                 JOptionPane.showMessageDialog(this, "수정 실패!", "오류", JOptionPane.ERROR_MESSAGE);
             }
