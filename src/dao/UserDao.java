@@ -60,6 +60,39 @@ public class UserDao {
         return ret;
     }
 
+    public UserDto findUser(String username) {
+        UserDto user = null;
+        String query = "SELECT * FROM users WHERE username = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, username);
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                user = new UserDto(rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getInt("amount"));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return user;
+    }
+
     public int deleteUser(int user_id) {
         int ret = -1;
         String query = "DELETE FROM user WHERE user_id = ?";
