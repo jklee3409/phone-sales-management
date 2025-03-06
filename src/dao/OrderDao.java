@@ -36,4 +36,29 @@ public class OrderDao {
 
         return ret;
     }
+
+    public int deleteOrder(int order_id) {
+        int ret = -1;
+        String query = "DELETE FROM orders WHERE order_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setInt(1, order_id);
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
 }
