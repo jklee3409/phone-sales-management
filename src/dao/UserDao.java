@@ -111,4 +111,29 @@ public class UserDao {
 
         return ret;
     }
+
+    public boolean isUsernameExists(String username) {
+        String query = "SELECT * FROM users WHERE username = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, username);
+
+            rs = pstmt.executeQuery();
+
+            return rs.next(); // 데이터가 있으면 이미 존재하는 사용자
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+    }
 }
