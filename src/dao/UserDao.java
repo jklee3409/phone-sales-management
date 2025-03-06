@@ -60,7 +60,7 @@ public class UserDao {
         return ret;
     }
 
-    public UserDto findUser(String username) {
+    public static UserDto findUser(String username) {
         UserDto user = null;
         String query = "SELECT * FROM users WHERE username = ?";
 
@@ -120,7 +120,7 @@ public class UserDao {
 
     public int updateAmount(int user_id, int amount) {
         int ret = -1;
-        String query = "UPDATE user SET amount = ? WHERE user_id = ?";
+        String query = "UPDATE users SET amount = ? WHERE user_id = ?";
 
         Connection conn = null;
         PreparedStatement pstmt = null;
