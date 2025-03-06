@@ -1,4 +1,4 @@
-package ui;
+package ui.common;
 
 import dao.PhoneDao;
 import dto.PhoneDto;

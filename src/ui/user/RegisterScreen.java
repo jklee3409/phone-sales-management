@@ -1,4 +1,4 @@
-package ui;
+package ui.user;
 
 import dao.UserDao;
 import dto.UserDto;

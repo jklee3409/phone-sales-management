@@ -1,10 +1,11 @@
-package ui;
+package ui.common;
 
 import dao.UserDao;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import ui.user.RegisterScreen;
 import ui.admin.AdminScreen;
 
 public class LoginScreen extends JFrame {
