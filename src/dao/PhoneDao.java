@@ -167,6 +167,32 @@ public class PhoneDao {
         return phone;
     }
 
+    public int updateStock(int phone_id, int stock) {
+        int ret = -1;
+        String query = "UPDATE phone SET stock = ? WHERE phone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setInt(1, stock);
+            pstmt.setInt(2, phone_id);
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
+
     public int getLatestPhoneId() {
         String query = "SELECT MAX(phone_id) FROM phone";
 
