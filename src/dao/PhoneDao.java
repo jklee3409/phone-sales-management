@@ -4,7 +4,10 @@ import common.DBManager;
 import dto.PhoneDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhoneDao {
 
@@ -91,5 +94,40 @@ public class PhoneDao {
         }
 
         return ret;
+    }
+
+    public List<PhoneDto> listPhone() {
+        List<PhoneDto> list = new ArrayList<>();
+        String query = "SELECT * FROM phone";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                PhoneDto phone = new PhoneDto(
+                    rs.getInt("phone_id"),
+                    rs.getString("model"),
+                    rs.getString("brand"),
+                    rs.getDate("released_at"),
+                    rs.getInt("price"),
+                    rs.getInt("stock")
+                );
+                list.add(phone);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return list;
     }
 }
