@@ -66,7 +66,7 @@ public class PhoneDetailDao {
 
     public int updatePhoneDetail(PhoneDetailDto phoneDetail) {
         int ret = -1;
-        String query = "UPDATE phon_detail SET processor = ?, ram = ?, storage = ?, battery = ?, weight = ? WHERE phone_id = ?";
+        String query = "UPDATE phone_detail SET processor = ?, ram = ?, storage = ?, battery = ?, weight = ? WHERE phone_id = ?";
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -86,6 +86,9 @@ public class PhoneDetailDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
         }
 
         return ret;
