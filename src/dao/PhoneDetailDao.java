@@ -4,7 +4,9 @@ import common.DBManager;
 import dto.PhoneDetailDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PhoneDetailDao {
 
@@ -87,5 +89,41 @@ public class PhoneDetailDao {
         }
 
         return ret;
+    }
+
+    public List<PhoneDetailDto> listPhoneDetail() {
+        String query = "SELECT * FROM phone_detail";
+        List<PhoneDetailDto> list = null;
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                PhoneDetailDto phoneDetail = new PhoneDetailDto(
+                        rs.getInt("phone_id"),
+                        rs.getString("processor"),
+                        rs.getString("ram"),
+                        rs.getString("storage"),
+                        rs.getInt("battery"),
+                        rs.getInt("weight")
+                );
+
+                list.add(phoneDetail);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return list;
     }
 }
