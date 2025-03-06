@@ -1,5 +1,6 @@
 package ui.common;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.UpdateOrBuilder;
 import dao.OrderDao;
 import dao.PhoneDetailDao;
 import dao.PhoneDao;
@@ -10,6 +11,7 @@ import dto.PhoneDto;
 import dto.UserDto;
 import javax.swing.*;
 import java.awt.*;
+import ui.user.PurchaseScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
     private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
@@ -19,7 +21,7 @@ public class PhoneDetailViewScreen extends JFrame {
 
     public PhoneDetailViewScreen(int phoneId, UserDto user, boolean isPurchaseMode) {
         setTitle("스마트폰 상세 정보");
-        setSize(400, 450);
+        setSize(420, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -107,8 +109,6 @@ public class PhoneDetailViewScreen extends JFrame {
 
             // 재고 감소
             phoneDao.updateStock(phone.getPhone_id(), phone.getStock() - 1);
-
-            JOptionPane.showMessageDialog(this, "구매 성공!");
 
         } else {
             JOptionPane.showMessageDialog(this, "구매 실패!", "오류", JOptionPane.ERROR_MESSAGE);
