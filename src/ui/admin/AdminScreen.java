@@ -2,7 +2,6 @@ package ui.admin;
 
 import javax.swing.*;
 import java.awt.*;
-import ui.common.StockViewScreen;
 
 public class AdminScreen extends JFrame {
     public AdminScreen() {
