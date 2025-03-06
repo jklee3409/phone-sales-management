@@ -84,14 +84,14 @@ public class PhoneRegisterScreen extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 8;
-        add(new JLabel("배터리:"), gbc);
+        add(new JLabel("배터리(mAh):"), gbc);
         gbc.gridx = 1;
         batteryField = new JTextField(15);
         add(batteryField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 9;
-        add(new JLabel("무게:"), gbc);
+        add(new JLabel("무게(g):"), gbc);
         gbc.gridx = 1;
         weightField = new JTextField(15);
         add(weightField, gbc);
