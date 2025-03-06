@@ -38,6 +38,30 @@ public class PhoneDetailDao {
         return ret;
     }
 
+    public int deletePhoneDetail(PhoneDetailDto phoneDetail) {
+        int ret = -1;
+        String query = "DELETE FROM phone_detail WHERE phone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+
+            pstmt.setInt(1, phoneDetail.getPhone_id());
+
+            ret = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBManager.releaseConnection(pstmt, conn);
+        }
+
+        return ret;
+    }
+
     public int updatePhoneDetail(PhoneDetailDto phoneDetail) {
         int ret = -1;
         String query = "UPDATE phon_detail SET processor = ?, ram = ?, storage = ?, battery = ?, weight = ? WHERE phone_id = ?";
