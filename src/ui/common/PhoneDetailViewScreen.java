@@ -1,6 +1,5 @@
 package ui.common;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.UpdateOrBuilder;
 import dao.OrderDao;
 import dao.PhoneDetailDao;
 import dao.PhoneDao;
@@ -11,7 +10,6 @@ import dto.PhoneDto;
 import dto.UserDto;
 import javax.swing.*;
 import java.awt.*;
-import ui.user.PurchaseScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
     private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
