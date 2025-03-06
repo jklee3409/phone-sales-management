@@ -34,7 +34,7 @@ public class UserDao {
 
     public int addUser(UserDto user) {
         int ret = -1;
-        String query = "INSERT INTO user VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (name, username, password, amount) VALUES (?, ?, ?, ?)";
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -43,11 +43,10 @@ public class UserDao {
             conn = DBManager.getConnection();
             pstmt = conn.prepareStatement(query);
 
-            pstmt.setInt(1, user.getUser_id());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getUsername());
-            pstmt.setString(4, user.getPassword());
-            pstmt.setInt(5, user.getAmount());
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getUsername());
+            pstmt.setString(3, user.getPassword());
+            pstmt.setInt(4, user.getAmount());
 
             ret = pstmt.executeUpdate();
 
