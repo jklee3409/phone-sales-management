@@ -1,4 +1,4 @@
-package ui.common;
+package ui.admin;
 
 import dao.PhoneDao;
 import dto.PhoneDto;
@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Vector;
+import ui.common.PhoneDetailViewScreen;
 
 public class StockViewScreen extends JFrame {
     private PhoneDao phoneDao = new PhoneDao();
@@ -40,7 +41,7 @@ public class StockViewScreen extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         int phoneId = (int) table.getValueAt(selectedRow, 0); // 첫 번째 열(phone_id) 가져오기
-                        new PhoneDetailViewScreen(phoneId);
+                        new PhoneDetailViewScreen(phoneId, null, false); // 상세 정보 화면 띄우기
                     }
                 }
             }
