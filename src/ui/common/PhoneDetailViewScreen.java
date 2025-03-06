@@ -10,6 +10,7 @@ import dto.PhoneDto;
 import dto.UserDto;
 import javax.swing.*;
 import java.awt.*;
+import ui.admin.PhoneEditScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
     private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
@@ -17,7 +18,7 @@ public class PhoneDetailViewScreen extends JFrame {
     private UserDao userDao = new UserDao();
     private OrderDao orderDao = new OrderDao();
 
-    public PhoneDetailViewScreen(int phoneId, UserDto user, boolean isPurchaseMode) {
+    public PhoneDetailViewScreen(int phoneId, UserDto user, boolean isPurchaseMode, boolean isAdmin) {
         setTitle("스마트폰 상세 정보");
         setSize(420, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -59,6 +60,14 @@ public class PhoneDetailViewScreen extends JFrame {
             purchaseButton.addActionListener(e -> purchasePhone(phone, user));
             container.add(Box.createRigidArea(new Dimension(0, 10)));
             container.add(purchaseButton);
+        }
+
+        if (isAdmin) {
+            JButton editButton = new JButton("수정하기");
+            editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id()));
+            container.add(Box.createRigidArea(new Dimension(0, 10)));
+            container.add(editButton);
         }
 
         JButton closeButton = new JButton("닫기");
