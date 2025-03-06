@@ -18,7 +18,13 @@ public class OrderViewScreen extends JFrame {
         setLocationRelativeTo(null);
 
         String[] columnNames = {"주문 ID", "사용자 ID", "폰 ID", "판매 가격", "주문 날짜"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 셀 수정 방지
+            }
+        };
+
         JTable table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
