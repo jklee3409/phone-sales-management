@@ -41,7 +41,7 @@ public class StockViewScreen extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         int phoneId = (int) table.getValueAt(selectedRow, 0); // 첫 번째 열(phone_id) 가져오기
-                        new PhoneDetailViewScreen(phoneId, null, false); // 상세 정보 화면 띄우기
+                        new PhoneDetailViewScreen(phoneId, null, false, true); // 관리자 모드, 구매 불가
                     }
                 }
             }
