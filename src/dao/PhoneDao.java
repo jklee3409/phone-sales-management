@@ -164,4 +164,31 @@ public class PhoneDao {
 
         return phone;
     }
+
+    public int getLatestPhoneId() {
+        String query = "SELECT MAX(phone_id) FROM phone";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        int lastIndex = -1;
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                lastIndex = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return lastIndex;
+    }
 }
