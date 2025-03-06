@@ -12,9 +12,9 @@ import java.util.List;
 
 public class OrderDao {
 
-    public int addOrder(OrderDto order) {
+    public int addOrder(int userId, int phoneId, int salePrice) {
         int ret = -1;
-        String query = "INSERT INTO orders VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO orders (user_id, phone_id, sale_price, order_date) VALUES (?, ?, ?, NOW())";
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -23,11 +23,9 @@ public class OrderDao {
             conn = DBManager.getConnection();
             pstmt = conn.prepareStatement(query);
 
-            pstmt.setInt(1, order.getOrder_id());
-            pstmt.setInt(2, order.getUser_id());
-            pstmt.setInt(3, order.getPhone_id());
-            pstmt.setInt(4, order.getSale_price());
-            pstmt.setDate(5, order.getOrder_date());
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, phoneId);
+            pstmt.setInt(3, salePrice);
 
             ret = pstmt.executeUpdate();
 
