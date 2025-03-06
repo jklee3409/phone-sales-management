@@ -4,9 +4,33 @@ import common.DBManager;
 import dto.UserDto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDao {
+
+    public static boolean authenticateUser(String username, String password) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            rs = pstmt.executeQuery();
+            return rs.next(); // 데이터가 있으면 로그인 성공
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+    }
 
     public int addUser(UserDto user) {
         int ret = -1;
