@@ -130,4 +130,38 @@ public class PhoneDao {
 
         return list;
     }
+
+    public PhoneDto getPhone(int phone_id) {
+        String query = "SELECT * FROM phone WHERE phone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        PhoneDto phone = null;
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                phone = new PhoneDto(
+                        rs.getInt("phone_id"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getDate("released_at"),
+                        rs.getInt("price"),
+                        rs.getInt("stock")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return phone;
+    }
 }
