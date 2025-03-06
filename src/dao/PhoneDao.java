@@ -142,6 +142,8 @@ public class PhoneDao {
         try {
             conn = DBManager.getConnection();
             pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, phone_id);
+
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
