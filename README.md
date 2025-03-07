@@ -27,7 +27,7 @@ LG U+ 유레카 미니 프로젝트로 개발한 **스마트폰 판매 관리 �
 
 ## 데이터베이스 테이블 설계
 
-![Image](https://github.com/user-attachments/assets/e952bb24-1fa7-49ed-a35c-ac2a2502f4bb)
+![Image](https://github.com/user-attachments/assets/663d5856-b127-4615-836c-5a597dba65d1)
 
 ### 1. `phone`
 
