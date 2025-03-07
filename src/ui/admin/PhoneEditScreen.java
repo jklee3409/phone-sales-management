@@ -72,7 +72,7 @@ public class PhoneEditScreen extends BaseButton {
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                if (phoneDao.deletePhone(phoneId) > 0 && phoneDetailDao.deletePhoneDetail(phoneId) > 0) {
+                if (phoneDetailDao.deletePhoneDetail(phoneId) > 0 && phoneDao.deletePhone(phoneId) > 0) {
                     JOptionPane.showMessageDialog(this, "스마트폰 정보 삭제 완료!");
                     dispose();
 
