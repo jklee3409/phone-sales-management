@@ -17,6 +17,13 @@ public class PhoneRegisterScreen extends JFrame{
 
     public PhoneRegisterScreen() {
         super("스마트폰 등록");
+        setSize(400, 450);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        formPanel = new PhoneFormPanel();
+        add(formPanel, BorderLayout.CENTER);
         addActionButton();
         setVisible(true);
     }
