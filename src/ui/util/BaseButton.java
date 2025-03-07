@@ -25,19 +25,17 @@ public abstract class BaseButton extends JFrame {
     protected abstract void handleAction(); // 버튼 액션을 강제 구현하도록 설정
     protected abstract void handleDelete(); // 삭제 버튼 액션을 강제 구현하도록 설정
 
-    protected void addActionButton(String text) {
-        JButton actionButton = new JButton(text);
-        actionButton.addActionListener(e -> handleAction());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(actionButton);
-        add(buttonPanel, BorderLayout.SOUTH);
-    }
+    protected void addButtons() {
+        JPanel buttonPanel = new JPanel(); // 하나의 버튼 패널 사용
 
-    protected void addDeleteButton(String text) {
-        JButton deleteButton = new JButton(text);
+        JButton actionButton = new JButton("수정하기");
+        actionButton.addActionListener(e -> handleAction());
+        buttonPanel.add(actionButton); // 수정 버튼 추가
+
+        JButton deleteButton = new JButton("삭제하기");
         deleteButton.addActionListener(e -> handleDelete());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(deleteButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.add(deleteButton); // 삭제 버튼 추가
+
+        add(buttonPanel, BorderLayout.SOUTH); // 패널 추가
     }
 }
