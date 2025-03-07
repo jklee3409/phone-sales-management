@@ -61,7 +61,7 @@ public class StockViewScreen extends JFrame {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         int phoneId = (int) table.getValueAt(selectedRow, 0);
-                        new PhoneDetailViewScreen(phoneId, null, StockViewScreen.this, false, true);
+                        new PhoneDetailViewScreen(phoneId, null, StockViewScreen.this, null,false, true);
                     }
                 }
             }
