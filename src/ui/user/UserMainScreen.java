@@ -28,7 +28,7 @@ public class UserMainScreen extends JFrame {
         buttonPanel.setLayout(new GridLayout(2, 1, 10, 10));
 
         JButton purchaseButton = new JButton("구매하기");
-        purchaseButton.addActionListener(e -> new PurchaseScreen(user.getUsername()));
+        purchaseButton.addActionListener(e -> new PurchaseScreen(user.getUsername(), this));
 
         JButton updateBalanceButton = new JButton("잔액 충전");
         updateBalanceButton.addActionListener(e -> new BalanceUpdateScreen(user, this));

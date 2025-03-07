@@ -20,9 +20,11 @@ public class PurchaseScreen extends JFrame {
     private JLabel balanceLabel;
     private JTable phoneTable;
     private DefaultTableModel tableModel;
+    private UserMainScreen userMainScreen;
 
-    public PurchaseScreen(String username) {
+    public PurchaseScreen(String username, UserMainScreen userMainScreen) {
         this.user = userDao.findUser(username);
+        this.userMainScreen = userMainScreen;
 
         setTitle("스마트폰 구매");
         setSize(600, 400);
@@ -67,7 +69,10 @@ public class PurchaseScreen extends JFrame {
     }
 
     public void updateUI() {
-        balanceLabel.setText("잔액: " + user.getAmount() + "원");
+        int newAmount = user.getAmount();
+
+        userMainScreen.updateBalanceUI(newAmount); // 메인 화면 잔액 업데이트
+        balanceLabel.setText("잔액: " + newAmount + "원");
         tableModel.setRowCount(0); // 기존 데이터 삭제
         loadPhoneData(); // 재고가 있는 제품만 다시 로드
     }
