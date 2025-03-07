@@ -12,14 +12,16 @@ import javax.swing.*;
 import java.awt.*;
 import ui.admin.PhoneEditScreen;
 import ui.admin.StockViewScreen;
+import ui.user.PurchaseScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
     private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
     private PhoneDao phoneDao = new PhoneDao();
     private UserDao userDao = new UserDao();
     private OrderDao orderDao = new OrderDao();
+    private PurchaseScreen purchaseScreen;
 
-    public PhoneDetailViewScreen(int phoneId, UserDto user, StockViewScreen stockViewScreen, boolean isPurchaseMode, boolean isAdmin) {
+    public PhoneDetailViewScreen(int phoneId, UserDto user, StockViewScreen stockViewScreen, PurchaseScreen purchaseScreen, boolean isPurchaseMode, boolean isAdmin) {
         setTitle("스마트폰 상세 정보");
         setSize(420, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -27,6 +29,7 @@ public class PhoneDetailViewScreen extends JFrame {
 
         PhoneDto phone = phoneDao.getPhone(phoneId);
         PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phoneId);
+        this.purchaseScreen = purchaseScreen;
 
         JPanel container = createContainer(phone, phoneDetail);
 
@@ -136,6 +139,11 @@ public class PhoneDetailViewScreen extends JFrame {
 
             // 재고 감소
             phoneDao.updateStock(phone.getPhone_id(), phone.getStock() - 1);
+
+            // ui 업데이트
+            if(purchaseScreen != null) {
+                purchaseScreen.updateUI();
+            }
 
         } else {
             JOptionPane.showMessageDialog(this, "구매 실패!", "오류", JOptionPane.ERROR_MESSAGE);
