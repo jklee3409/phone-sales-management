@@ -1,21 +1,35 @@
 package ui.admin;
 
+import dao.PhoneDao;
+import dao.PhoneDetailDao;
 import dto.PhoneDto;
 import dto.PhoneDetailDto;
 
+import java.awt.*;
 import javax.swing.*;
 import java.sql.Date;
-import ui.util.PhoneBaseScreen;
+import ui.util.PhoneFormPanel;
 
-public class PhoneRegisterScreen extends PhoneBaseScreen {
+public class PhoneRegisterScreen extends JFrame{
+    private PhoneFormPanel formPanel;
+    private PhoneDao phoneDao = new PhoneDao();
+    private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
+
     public PhoneRegisterScreen() {
         super("스마트폰 등록");
-        addActionButton("등록");
+        addActionButton();
         setVisible(true);
     }
 
-    @Override
-    protected void handleAction() {
+    private void addActionButton() {
+        JButton actionButton = new JButton("등록");
+        actionButton.addActionListener(e -> handleAction());
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(actionButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void handleAction() {
         try {
             PhoneDto phone = new PhoneDto(
                     0,
