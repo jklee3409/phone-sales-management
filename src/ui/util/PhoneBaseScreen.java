@@ -1,10 +1,7 @@
-package ui.admin;
+package ui.util;
 
 import dao.PhoneDao;
 import dao.PhoneDetailDao;
-import dto.PhoneDto;
-import dto.PhoneDetailDto;
-import ui.common.PhoneFormPanel;
 
 import javax.swing.*;
 import java.awt.*;
