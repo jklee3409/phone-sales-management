@@ -40,7 +40,7 @@ public class PhoneDetailDao {
         return ret;
     }
 
-    public int deletePhoneDetail(PhoneDetailDto phoneDetail) {
+    public int deletePhoneDetail(int phone_id) {
         int ret = -1;
         String query = "DELETE FROM phone_detail WHERE phone_id = ?";
 
@@ -51,12 +51,13 @@ public class PhoneDetailDao {
             conn = DBManager.getConnection();
             pstmt = conn.prepareStatement(query);
 
-            pstmt.setInt(1, phoneDetail.getPhone_id());
+            pstmt.setInt(1, phone_id);
 
             ret = pstmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
+
         } finally {
             DBManager.releaseConnection(pstmt, conn);
         }
