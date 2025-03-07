@@ -5,6 +5,7 @@ import dto.PhoneDetailDto;
 
 import javax.swing.*;
 import java.sql.Date;
+import ui.util.PhoneBaseScreen;
 
 public class PhoneRegisterScreen extends PhoneBaseScreen {
     public PhoneRegisterScreen() {

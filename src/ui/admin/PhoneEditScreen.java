@@ -6,6 +6,7 @@ import dto.PhoneDetailDto;
 import javax.swing.*;
 import java.sql.Date;
 import ui.common.PhoneDetailViewScreen;
+import ui.util.PhoneBaseScreen;
 
 public class PhoneEditScreen extends PhoneBaseScreen {
     private int phoneId;
