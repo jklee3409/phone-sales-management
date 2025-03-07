@@ -219,4 +219,40 @@ public class PhoneDao {
 
         return lastIndex;
     }
+
+    public List<PhoneDto> searchPhoneList(String model) {
+        List<PhoneDto> list = new ArrayList<>();
+        String query = "SELECT * FROM phone WHERE model LIKE ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, "%" + model + "%");
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                PhoneDto phone = new PhoneDto(
+                        rs.getInt("phone_id"),
+                        rs.getString("model"),
+                        rs.getString("brand"),
+                        rs.getDate("released_at"),
+                        rs.getInt("price"),
+                        rs.getInt("stock")
+                );
+                list.add(phone);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            DBManager.releaseConnection(rs, pstmt, conn);
+        }
+
+        return list;
+    }
 }
