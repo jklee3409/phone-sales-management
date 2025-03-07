@@ -39,7 +39,7 @@ public class PhoneDetailViewScreen extends JFrame {
         }
 
         if (isAdmin) {
-            JButton editButton = new JButton("수정하기");
+            JButton editButton = new JButton("수정 및 삭제");
             editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id(), stockViewScreen,this));
             container.add(Box.createRigidArea(new Dimension(0, 10)));
