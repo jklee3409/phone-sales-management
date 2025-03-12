@@ -1,6 +1,6 @@
 package ui.user;
 
-import dao.UserDao;
+import common.MybatisManager;
 import dto.UserDto;
 
 import javax.swing.*;
@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class BalanceUpdateScreen extends JFrame {
     private UserDto user;
-    private UserDao userDao = new UserDao();
     private JTextField amountField;
     private UserMainScreen mainScreen; // 메인 화면 업데이트
 
@@ -44,7 +43,7 @@ public class BalanceUpdateScreen extends JFrame {
             }
 
             int newBalance = user.getAmount() + amountToAdd;
-            userDao.updateAmount(user.getUser_id(), newBalance);
+            MybatisManager.getUserDao().updateAmount(user.getUser_id(), newBalance);
             user.setAmount(newBalance);
 
             if (mainScreen != null) {
@@ -53,6 +52,8 @@ public class BalanceUpdateScreen extends JFrame {
 
             JOptionPane.showMessageDialog(this, "잔액 충전 완료! 현재 잔액: " + newBalance + "원");
             dispose();
+            MybatisManager.commit();
+            MybatisManager.closeSession();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "숫자만 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
         }

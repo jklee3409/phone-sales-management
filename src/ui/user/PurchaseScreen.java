@@ -1,7 +1,6 @@
 package ui.user;
 
-import dao.PhoneDao;
-import dao.UserDao;
+import common.MybatisManager;
 import dto.PhoneDto;
 import dto.UserDto;
 
@@ -15,15 +14,13 @@ import ui.common.PhoneDetailViewScreen;
 
 public class PurchaseScreen extends JFrame {
     private UserDto user;
-    private PhoneDao phoneDao = new PhoneDao();
-    private UserDao userDao = new UserDao();
     private JLabel balanceLabel;
     private JTable phoneTable;
     private DefaultTableModel tableModel;
     private UserMainScreen userMainScreen;
 
     public PurchaseScreen(String username, UserMainScreen userMainScreen) {
-        this.user = userDao.findUser(username);
+        this.user = MybatisManager.getUserDao().findUser(username);
         this.userMainScreen = userMainScreen;
 
         setTitle("스마트폰 구매");
@@ -66,6 +63,7 @@ public class PurchaseScreen extends JFrame {
         });
 
         setVisible(true);
+        MybatisManager.closeSession();
     }
 
     public void updateUI() {
@@ -78,7 +76,7 @@ public class PurchaseScreen extends JFrame {
     }
 
     private void loadPhoneData() {
-        List<PhoneDto> phones = phoneDao.listPhone();
+        List<PhoneDto> phones = MybatisManager.getPhoneDao().listPhone();
         for (PhoneDto phone : phones) {
             if (phone.getStock() > 0) { // 재고가 있는 제품만 표시
                 Vector<Object> row = new Vector<>();
@@ -93,6 +91,7 @@ public class PurchaseScreen extends JFrame {
                 tableModel.addRow(row);
             }
         }
+        MybatisManager.closeSession();
     }
 }
 

@@ -1,5 +1,6 @@
 package ui.admin;
 
+import common.MybatisManager;
 import dto.PhoneDto;
 import dto.PhoneDetailDto;
 
@@ -44,7 +45,9 @@ public class PhoneEditScreen extends BaseButton {
                     Integer.parseInt(formPanel.weightField.getText())
             );
 
-            if (phoneDao.updatePhone(phone) > 0 && phoneDetailDao.updatePhoneDetail(phoneDetail) > 0) {
+            if (MybatisManager.getPhoneDao().updatePhone(phone) > 0 && MybatisManager.getPhoneDetailDao().updatePhoneDetail(phoneDetail) > 0) {
+                MybatisManager.commit();
+                MybatisManager.closeSession();
                 JOptionPane.showMessageDialog(this, "스마트폰 정보 수정 완료!");
                 dispose();
 
@@ -72,7 +75,9 @@ public class PhoneEditScreen extends BaseButton {
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                if (phoneDetailDao.deletePhoneDetail(phoneId) > 0 && phoneDao.deletePhone(phoneId) > 0) {
+                if (MybatisManager.getPhoneDetailDao().deletePhoneDetail(phoneId) > 0 && MybatisManager.getPhoneDao().deletePhone(phoneId) > 0) {
+                    MybatisManager.commit();
+                    MybatisManager.closeSession();
                     JOptionPane.showMessageDialog(this, "스마트폰 정보 삭제 완료!");
                     dispose();
 
@@ -96,8 +101,8 @@ public class PhoneEditScreen extends BaseButton {
     }
 
     private void loadPhoneData() {
-        PhoneDto phone = phoneDao.getPhone(phoneId);
-        PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phoneId);
+        PhoneDto phone = MybatisManager.getPhoneDao().getPhone(phoneId);
+        PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao().getPhoneDetail(phoneId);
 
         if (phone != null) {
             formPanel.modelField.setText(phone.getModel());
@@ -114,5 +119,7 @@ public class PhoneEditScreen extends BaseButton {
             formPanel.batteryField.setText(String.valueOf(phoneDetail.getBattery()));
             formPanel.weightField.setText(String.valueOf(phoneDetail.getWeight()));
         }
+
+        MybatisManager.closeSession();
     }
 }

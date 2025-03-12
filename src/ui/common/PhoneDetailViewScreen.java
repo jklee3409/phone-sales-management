@@ -1,9 +1,6 @@
 package ui.common;
 
-import dao.OrderDao;
-import dao.PhoneDetailDao;
-import dao.PhoneDao;
-import dao.UserDao;
+import common.MybatisManager;
 import dto.PhoneDetailDto;
 import dto.PhoneDto;
 
@@ -15,10 +12,6 @@ import ui.admin.StockViewScreen;
 import ui.user.PurchaseScreen;
 
 public class PhoneDetailViewScreen extends JFrame {
-    private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
-    private PhoneDao phoneDao = new PhoneDao();
-    private UserDao userDao = new UserDao();
-    private OrderDao orderDao = new OrderDao();
     private PurchaseScreen purchaseScreen;
 
     public PhoneDetailViewScreen(int phoneId, UserDto user, StockViewScreen stockViewScreen, PurchaseScreen purchaseScreen, boolean isPurchaseMode, boolean isAdmin) {
@@ -27,8 +20,8 @@ public class PhoneDetailViewScreen extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        PhoneDto phone = phoneDao.getPhone(phoneId);
-        PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phoneId);
+        PhoneDto phone = MybatisManager.getPhoneDao().getPhone(phoneId);
+        PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao().getPhoneDetail(phoneId);
         this.purchaseScreen = purchaseScreen;
 
         JPanel container = createContainer(phone, phoneDetail);
@@ -57,6 +50,7 @@ public class PhoneDetailViewScreen extends JFrame {
 
         add(container);
         setVisible(true);
+        MybatisManager.closeSession();
     }
 
     public void updatePhoneDetail(PhoneDto phone) {
@@ -64,7 +58,7 @@ public class PhoneDetailViewScreen extends JFrame {
         repaint();
         revalidate();
 
-        PhoneDetailDto phoneDetail = phoneDetailDao.getPhoneDetail(phone.getPhone_id());
+        PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao().getPhoneDetail(phone.getPhone_id());
         JPanel container = createContainer(phone, phoneDetail);
 
         JButton closeButton = new JButton("닫기");
@@ -76,6 +70,7 @@ public class PhoneDetailViewScreen extends JFrame {
         getContentPane().add(container);
         repaint();
         revalidate();
+        MybatisManager.closeSession();
     }
 
     private JPanel createContainer(PhoneDto phone, PhoneDetailDto phoneDetail) {
@@ -130,15 +125,15 @@ public class PhoneDetailViewScreen extends JFrame {
         if (confirm != JOptionPane.YES_OPTION) return;
 
         // 주문 생성
-        int orderResult = orderDao.addOrder(user.getUser_id(), phone.getPhone_id(), phone.getPrice());
+        int orderResult = MybatisManager.getOrderDao().addOrder(user.getUser_id(), phone.getPhone_id(), phone.getPrice());
         if (orderResult > 0) {
 
             // 잔액 차감
             user.setAmount(user.getAmount() - phone.getPrice());
-            userDao.updateAmount(user.getUser_id(), user.getAmount());
+            MybatisManager.getUserDao().updateAmount(user.getUser_id(), user.getAmount());
 
             // 재고 감소
-            phoneDao.updateStock(phone.getPhone_id(), phone.getStock() - 1);
+            MybatisManager.getPhoneDao().updateStock(phone.getPhone_id(), phone.getStock() - 1);
 
             // ui 업데이트
             if(purchaseScreen != null) {
@@ -151,6 +146,8 @@ public class PhoneDetailViewScreen extends JFrame {
 
         JOptionPane.showMessageDialog(this, "구매 완료!");
         dispose();
+        MybatisManager.commit();
+        MybatisManager.closeSession();
     }
 }
 

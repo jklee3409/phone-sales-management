@@ -1,6 +1,6 @@
 package ui.admin;
 
-import dao.PhoneDao;
+import common.MybatisManager;
 import dto.PhoneDto;
 
 import java.awt.*;
@@ -16,7 +16,6 @@ import java.util.Vector;
 import ui.common.PhoneDetailViewScreen;
 
 public class StockViewScreen extends JFrame {
-    private PhoneDao phoneDao = new PhoneDao();
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField searchField; // 검색 입력 필드
@@ -84,7 +83,8 @@ public class StockViewScreen extends JFrame {
 
     private void loadStockData() {
         tableModel.setRowCount(0);
-        List<PhoneDto> phones = phoneDao.listPhone();
+        List<PhoneDto> phones = MybatisManager.getPhoneDao().listPhone();
+        MybatisManager.closeSession();
 
         loadData(phones);
     }
@@ -92,7 +92,8 @@ public class StockViewScreen extends JFrame {
     private void filterStockData(String model) {
         tableModel.setRowCount(0);
 
-        List<PhoneDto> filteredPhones = phoneDao.searchPhoneList(model);
+        List<PhoneDto> filteredPhones = MybatisManager.getPhoneDao().searchPhoneList(model);
+        MybatisManager.closeSession();
 
         loadData(filteredPhones);
     }

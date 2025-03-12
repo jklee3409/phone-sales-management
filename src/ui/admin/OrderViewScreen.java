@@ -1,7 +1,7 @@
 package ui.admin;
 
-import dao.OrderDao;
 import dto.OrderDto;
+import common.MybatisManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Vector;
 
 public class OrderViewScreen extends JFrame {
-    private OrderDao orderDao = new OrderDao();
 
     public OrderViewScreen() {
         setTitle("주문 조회");
@@ -35,7 +34,7 @@ public class OrderViewScreen extends JFrame {
     }
 
     private void loadOrderData(DefaultTableModel tableModel) {
-        List<OrderDto> orders = orderDao.listOrders();
+        List<OrderDto> orders = MybatisManager.getOrderDao().listOrders();
 
         for (OrderDto order : orders) {
             Vector<Object> row = new Vector<>();
@@ -46,5 +45,7 @@ public class OrderViewScreen extends JFrame {
             row.add(order.getOrder_date());
             tableModel.addRow(row);
         }
+
+        MybatisManager.closeSession();
     }
 }

@@ -1,6 +1,6 @@
 package ui.user;
 
-import dao.UserDao;
+import common.MybatisManager;
 import dto.UserDto;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ public class UserMainScreen extends JFrame {
     private JLabel balanceLabel;
 
     public UserMainScreen(String username) {
-        this.user = UserDao.findUser(username);
+        this.user = MybatisManager.getUserDao().findUser(username);
 
         setTitle("메인 메뉴");
         setSize(400, 200);
@@ -38,6 +38,7 @@ public class UserMainScreen extends JFrame {
 
         add(buttonPanel, BorderLayout.CENTER);
         setVisible(true);
+        MybatisManager.closeSession();
     }
 
     // UI 잔액 업데이트

@@ -1,7 +1,6 @@
 package ui.admin;
 
-import dao.PhoneDao;
-import dao.PhoneDetailDao;
+import common.MybatisManager;
 import dto.PhoneDto;
 import dto.PhoneDetailDto;
 
@@ -12,8 +11,6 @@ import ui.util.PhoneFormPanel;
 
 public class PhoneRegisterScreen extends JFrame{
     private PhoneFormPanel formPanel;
-    private PhoneDao phoneDao = new PhoneDao();
-    private PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
 
     public PhoneRegisterScreen() {
         super("스마트폰 등록");
@@ -47,10 +44,10 @@ public class PhoneRegisterScreen extends JFrame{
                     Integer.parseInt(formPanel.stockField.getText())
             );
 
-            int result = phoneDao.addPhone(phone);
+            int result = MybatisManager.getPhoneDao().addPhone(phone);
             if (result <= 0) throw new Exception("스마트폰 등록 실패");
 
-            int phoneId = phoneDao.getLatestPhoneId();
+            int phoneId = MybatisManager.getPhoneDao().getLatestPhoneId();
             PhoneDetailDto phoneDetail = new PhoneDetailDto(
                     phoneId,
                     formPanel.processorField.getText(),
@@ -60,7 +57,8 @@ public class PhoneRegisterScreen extends JFrame{
                     Integer.parseInt(formPanel.weightField.getText())
             );
 
-            if (phoneDetailDao.addPhoneDetail(phoneDetail) > 0) {
+            if (MybatisManager.getPhoneDetailDao().addPhoneDetail(phoneDetail) > 0) {
+                MybatisManager.commit();
                 JOptionPane.showMessageDialog(this, "스마트폰 등록 완료!");
                 dispose();
             } else {
@@ -69,5 +67,6 @@ public class PhoneRegisterScreen extends JFrame{
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "등록 실패! " + e.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
         }
+        MybatisManager.closeSession();
     }
 }

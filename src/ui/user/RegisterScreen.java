@@ -1,6 +1,6 @@
 package ui.user;
 
-import dao.UserDao;
+import common.MybatisManager;
 import dto.UserDto;
 
 import javax.swing.*;
@@ -9,7 +9,6 @@ import java.awt.*;
 public class RegisterScreen extends JFrame {
     private JTextField nameField, usernameField, amountField;
     private JPasswordField passwordField;
-    private UserDao userDao = new UserDao();
 
     public RegisterScreen() {
         setTitle("회원 가입");
@@ -76,7 +75,7 @@ public class RegisterScreen extends JFrame {
             return;
         }
 
-        if (userDao.isUsernameExists(username)) {
+        if (MybatisManager.getUserDao().isUsernameExists(username)) {
             JOptionPane.showMessageDialog(this, "이미 존재하는 아이디입니다!", "오류", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -85,15 +84,18 @@ public class RegisterScreen extends JFrame {
             int amount = Integer.parseInt(amountText);
             UserDto user = new UserDto(0, name, username, password, amount);
 
-            int result = userDao.addUser(user);
+            int result = MybatisManager.getUserDao().addUser(user);
             if (result > 0) {
                 JOptionPane.showMessageDialog(this, "회원 가입 완료!");
                 dispose();
+                MybatisManager.commit();
             } else {
                 JOptionPane.showMessageDialog(this, "회원 가입 실패!", "오류", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "잔액은 숫자로 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
         }
+
+        MybatisManager.closeSession();
     }
 }

@@ -1,15 +1,10 @@
 package ui.util;
 
-import dao.PhoneDao;
-import dao.PhoneDetailDao;
-
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class BaseButton extends JFrame {
     protected PhoneFormPanel formPanel;
-    protected PhoneDao phoneDao = new PhoneDao();
-    protected PhoneDetailDao phoneDetailDao = new PhoneDetailDao();
 
     public BaseButton(String title) {
         setTitle(title);

@@ -1,11 +1,10 @@
 package ui.common;
 
-import dao.UserDao;
+import common.MybatisManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import ui.user.PurchaseScreen;
 import ui.user.RegisterScreen;
 import ui.admin.AdminScreen;
 import ui.user.UserMainScreen;
@@ -73,7 +72,8 @@ public class LoginScreen extends JFrame {
             }
 
             // 2. 일반 사용자 인증 (DB 확인)
-            if (UserDao.authenticateUser(username, password)) {
+            if (MybatisManager.getUserDao().authenticateUser(username, password)) {
+                MybatisManager.closeSession();
                 JOptionPane.showMessageDialog(LoginScreen.this, "로그인 성공!");
                 dispose();  // 현재 창 닫기
                 new UserMainScreen(username);  // 유저 화면으로 이동
