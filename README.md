@@ -11,7 +11,7 @@ https://github.com/user-attachments/assets/2516113c-4948-4654-8652-fe670fb08b43
 - **언어**: Java
 - **UI 프레임워크**: Swing
 - **데이터베이스**: MySQL
-- **데이터베이스 연동**: JDBC
+- **데이터베이스 연동**: Mybatis
 
 ## 주요 기능
 
