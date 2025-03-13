@@ -1,15 +1,18 @@
 package dto;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class OrderDto {
     private int order_id;
     private int user_id;
     private int phone_id;
     private int sale_price;
-    private Date order_date;
+    private LocalDate order_date;
 
-    public OrderDto(int order_id, int user_id, int phone_id, int sale_price, Date order_date) {
+    public OrderDto() {}
+
+    public OrderDto(int order_id, int user_id, int phone_id, int sale_price, LocalDate order_date) {
         this.order_id = order_id;
         this.user_id = user_id;
         this.phone_id = phone_id;
@@ -49,11 +52,11 @@ public class OrderDto {
         this.sale_price = sale_price;
     }
 
-    public Date getOrder_date() {
+    public LocalDate getOrder_date() {
         return order_date;
     }
 
-    public void setOrder_date(Date order_date) {
+    public void setOrder_date(LocalDate order_date) {
         this.order_date = order_date;
     }
 }
