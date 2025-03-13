@@ -1,5 +1,6 @@
 package ui.admin;
 
+import dao.OrderDao;
 import dto.OrderDto;
 import common.MybatisManager;
 
@@ -7,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Vector;
+import org.apache.ibatis.session.SqlSession;
 
 public class OrderViewScreen extends JFrame {
 
@@ -34,7 +36,8 @@ public class OrderViewScreen extends JFrame {
     }
 
     private void loadOrderData(DefaultTableModel tableModel) {
-        List<OrderDto> orders = MybatisManager.getOrderDao().listOrders();
+        SqlSession session = MybatisManager.getSession();
+        List<OrderDto> orders = MybatisManager.getOrderDao(session).listOrders();
 
         for (OrderDto order : orders) {
             Vector<Object> row = new Vector<>();
@@ -46,6 +49,6 @@ public class OrderViewScreen extends JFrame {
             tableModel.addRow(row);
         }
 
-        MybatisManager.closeSession();
+        session.close();
     }
 }

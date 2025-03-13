@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Vector;
+import org.apache.ibatis.session.SqlSession;
 import ui.common.PhoneDetailViewScreen;
 
 public class PurchaseScreen extends JFrame {
@@ -20,7 +21,9 @@ public class PurchaseScreen extends JFrame {
     private UserMainScreen userMainScreen;
 
     public PurchaseScreen(String username, UserMainScreen userMainScreen) {
-        this.user = MybatisManager.getUserDao().findUser(username);
+        SqlSession session = MybatisManager.getSession();
+
+        this.user = MybatisManager.getUserDao(session).findUser(username);
         this.userMainScreen = userMainScreen;
 
         setTitle("스마트폰 구매");
@@ -63,7 +66,7 @@ public class PurchaseScreen extends JFrame {
         });
 
         setVisible(true);
-        MybatisManager.closeSession();
+        session.close();
     }
 
     public void updateUI() {
@@ -76,7 +79,10 @@ public class PurchaseScreen extends JFrame {
     }
 
     private void loadPhoneData() {
-        List<PhoneDto> phones = MybatisManager.getPhoneDao().listPhone();
+        SqlSession session = MybatisManager.getSession();
+
+        List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
+
         for (PhoneDto phone : phones) {
             if (phone.getStock() > 0) { // 재고가 있는 제품만 표시
                 Vector<Object> row = new Vector<>();
@@ -91,7 +97,8 @@ public class PurchaseScreen extends JFrame {
                 tableModel.addRow(row);
             }
         }
-        MybatisManager.closeSession();
+
+        session.close();
     }
 }
 

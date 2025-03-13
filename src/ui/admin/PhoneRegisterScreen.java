@@ -7,6 +7,7 @@ import dto.PhoneDetailDto;
 import java.awt.*;
 import javax.swing.*;
 import java.sql.Date;
+import org.apache.ibatis.session.SqlSession;
 import ui.util.PhoneFormPanel;
 
 public class PhoneRegisterScreen extends JFrame{
@@ -34,6 +35,8 @@ public class PhoneRegisterScreen extends JFrame{
     }
 
     private void handleAction() {
+        SqlSession session = MybatisManager.getSession();
+
         try {
             PhoneDto phone = new PhoneDto(
                     0,
@@ -44,10 +47,10 @@ public class PhoneRegisterScreen extends JFrame{
                     Integer.parseInt(formPanel.stockField.getText())
             );
 
-            int result = MybatisManager.getPhoneDao().addPhone(phone);
+            int result = MybatisManager.getPhoneDao(session).addPhone(phone);
             if (result <= 0) throw new Exception("스마트폰 등록 실패");
 
-            int phoneId = MybatisManager.getPhoneDao().getLatestPhoneId();
+            int phoneId = MybatisManager.getPhoneDao(session).getLatestPhoneId();
             PhoneDetailDto phoneDetail = new PhoneDetailDto(
                     phoneId,
                     formPanel.processorField.getText(),
@@ -57,8 +60,8 @@ public class PhoneRegisterScreen extends JFrame{
                     Integer.parseInt(formPanel.weightField.getText())
             );
 
-            if (MybatisManager.getPhoneDetailDao().addPhoneDetail(phoneDetail) > 0) {
-                MybatisManager.commit();
+            if (MybatisManager.getPhoneDetailDao(session).addPhoneDetail(phoneDetail) > 0) {
+                session.commit();
                 JOptionPane.showMessageDialog(this, "스마트폰 등록 완료!");
                 dispose();
             } else {
@@ -66,7 +69,9 @@ public class PhoneRegisterScreen extends JFrame{
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "등록 실패! " + e.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+
+        } finally {
+            session.close();
         }
-        MybatisManager.closeSession();
     }
 }

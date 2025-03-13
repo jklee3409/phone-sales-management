@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.apache.ibatis.session.SqlSession;
 import ui.user.RegisterScreen;
 import ui.admin.AdminScreen;
 import ui.user.UserMainScreen;
@@ -53,8 +54,11 @@ public class LoginScreen extends JFrame {
 
     // 로그인 검증 로직 (관리자 / 일반 사용자)
     private class LoginAction implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
+            SqlSession session = MybatisManager.getSession();
+
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
 
@@ -72,14 +76,15 @@ public class LoginScreen extends JFrame {
             }
 
             // 2. 일반 사용자 인증 (DB 확인)
-            if (MybatisManager.getUserDao().authenticateUser(username, password)) {
-                MybatisManager.closeSession();
+            if (MybatisManager.getUserDao(session).authenticateUser(username, password)) {
                 JOptionPane.showMessageDialog(LoginScreen.this, "로그인 성공!");
                 dispose();  // 현재 창 닫기
                 new UserMainScreen(username);  // 유저 화면으로 이동
             } else {
                 JOptionPane.showMessageDialog(LoginScreen.this, "로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
             }
+
+            session.close();
         }
     }
 }

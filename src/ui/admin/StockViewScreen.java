@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.ibatis.session.SqlSession;
 import ui.common.PhoneDetailViewScreen;
 
 public class StockViewScreen extends JFrame {
@@ -82,20 +83,23 @@ public class StockViewScreen extends JFrame {
     }
 
     private void loadStockData() {
+        SqlSession session = MybatisManager.getSession();
+
         tableModel.setRowCount(0);
-        List<PhoneDto> phones = MybatisManager.getPhoneDao().listPhone();
-        MybatisManager.closeSession();
+        List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
 
         loadData(phones);
+        session.close();
     }
 
     private void filterStockData(String model) {
+        SqlSession session = MybatisManager.getSession();
         tableModel.setRowCount(0);
 
-        List<PhoneDto> filteredPhones = MybatisManager.getPhoneDao().searchPhoneList(model);
-        MybatisManager.closeSession();
+        List<PhoneDto> filteredPhones = MybatisManager.getPhoneDao(session).searchPhoneList(model);
 
         loadData(filteredPhones);
+        session.close();
     }
 
     private void loadData(List<PhoneDto> filteredPhones) {

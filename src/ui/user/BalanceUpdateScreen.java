@@ -5,6 +5,7 @@ import dto.UserDto;
 
 import javax.swing.*;
 import java.awt.*;
+import org.apache.ibatis.session.SqlSession;
 
 public class BalanceUpdateScreen extends JFrame {
     private UserDto user;
@@ -35,6 +36,8 @@ public class BalanceUpdateScreen extends JFrame {
 
     // 잔액 업데이트
     private void updateBalance() {
+        SqlSession session = MybatisManager.getSession();
+
         try {
             int amountToAdd = Integer.parseInt(amountField.getText().trim());
             if (amountToAdd <= 0) {
@@ -43,7 +46,7 @@ public class BalanceUpdateScreen extends JFrame {
             }
 
             int newBalance = user.getAmount() + amountToAdd;
-            MybatisManager.getUserDao().updateAmount(user.getUser_id(), newBalance);
+            MybatisManager.getUserDao(session).updateAmount(user.getUser_id(), newBalance);
             user.setAmount(newBalance);
 
             if (mainScreen != null) {
@@ -52,10 +55,12 @@ public class BalanceUpdateScreen extends JFrame {
 
             JOptionPane.showMessageDialog(this, "잔액 충전 완료! 현재 잔액: " + newBalance + "원");
             dispose();
-            MybatisManager.commit();
-            MybatisManager.closeSession();
+            session.commit();
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "숫자만 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+
+        } finally {
+            session.close();
         }
     }
 }

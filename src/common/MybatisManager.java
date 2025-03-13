@@ -13,7 +13,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class MybatisManager {
     private static final SqlSessionFactory sqlSessionFactory;
-    private static final ThreadLocal<SqlSession> threadLocalSession = new ThreadLocal<>();
 
     static {
         try {
@@ -25,43 +24,23 @@ public class MybatisManager {
     }
 
     public static SqlSession getSession() {
-        SqlSession session = threadLocalSession.get();
-        if (session == null) {
-            session = sqlSessionFactory.openSession();
-            threadLocalSession.set(session);
-        }
-        return session;
+        return sqlSessionFactory.openSession();
     }
 
-    public static PhoneDao getPhoneDao() {
-        return getSession().getMapper(PhoneDao.class);
+    public static PhoneDao getPhoneDao(SqlSession session) {
+        return session.getMapper(PhoneDao.class);
     }
 
-    public static UserDao getUserDao() {
-        return getSession().getMapper(UserDao.class);
+    public static UserDao getUserDao(SqlSession session) {
+        return session.getMapper(UserDao.class);
     }
 
-    public static PhoneDetailDao getPhoneDetailDao() {
-        return getSession().getMapper(PhoneDetailDao.class);
+    public static PhoneDetailDao getPhoneDetailDao(SqlSession session) {
+        return session.getMapper(PhoneDetailDao.class);
     }
 
-    public static OrderDao getOrderDao() {
-        return getSession().getMapper(OrderDao.class);
-    }
-
-    public static void closeSession() {
-        SqlSession session = threadLocalSession.get();
-        if (session != null) {
-            session.close();
-            threadLocalSession.remove();
-        }
-    }
-
-    public static void commit() {
-        SqlSession session = threadLocalSession.get();
-        if (session != null) {
-            session.commit();
-        }
+    public static OrderDao getOrderDao(SqlSession session) {
+        return session.getMapper(OrderDao.class);
     }
 }
 

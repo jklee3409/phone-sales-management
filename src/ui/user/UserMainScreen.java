@@ -5,13 +5,15 @@ import dto.UserDto;
 
 import javax.swing.*;
 import java.awt.*;
+import org.apache.ibatis.session.SqlSession;
 
 public class UserMainScreen extends JFrame {
     private UserDto user;
     private JLabel balanceLabel;
 
     public UserMainScreen(String username) {
-        this.user = MybatisManager.getUserDao().findUser(username);
+        SqlSession session = MybatisManager.getSession();
+        this.user = MybatisManager.getUserDao(session).findUser(username);
 
         setTitle("메인 메뉴");
         setSize(400, 200);
@@ -38,7 +40,7 @@ public class UserMainScreen extends JFrame {
 
         add(buttonPanel, BorderLayout.CENTER);
         setVisible(true);
-        MybatisManager.closeSession();
+        session.close();
     }
 
     // UI 잔액 업데이트
