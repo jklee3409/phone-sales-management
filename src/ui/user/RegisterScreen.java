@@ -66,39 +66,39 @@ public class RegisterScreen extends JFrame {
     }
 
     private void registerUser() {
-        SqlSession session = MybatisManager.getSession();
+        try (SqlSession session = MybatisManager.getSession()){
 
-        String name = nameField.getText().trim();
-        String username = usernameField.getText().trim();
-        String password = new String(passwordField.getPassword()).trim();
-        String amountText = amountField.getText().trim();
+            String name = nameField.getText().trim();
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String amountText = amountField.getText().trim();
 
-        if (name.isEmpty() || username.isEmpty() || password.isEmpty() || amountText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "모든 필드를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (MybatisManager.getUserDao(session).isUsernameExists(username)) {
-            JOptionPane.showMessageDialog(this, "이미 존재하는 아이디입니다!", "오류", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            int amount = Integer.parseInt(amountText);
-            UserDto user = new UserDto(0, name, username, password, amount);
-
-            int result = MybatisManager.getUserDao(session).addUser(user);
-            if (result > 0) {
-                JOptionPane.showMessageDialog(this, "회원 가입 완료!");
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "회원 가입 실패!", "오류", JOptionPane.ERROR_MESSAGE);
+            if (name.isEmpty() || username.isEmpty() || password.isEmpty() || amountText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "모든 필드를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "잔액은 숫자로 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-        }
 
-        session.commit();
-        session.close();
+            if (MybatisManager.getUserDao(session).isUsernameExists(username)) {
+                JOptionPane.showMessageDialog(this, "이미 존재하는 아이디입니다!", "오류", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int amount = Integer.parseInt(amountText);
+                UserDto user = new UserDto(0, name, username, password, amount);
+
+                int result = MybatisManager.getUserDao(session).addUser(user);
+                if (result > 0) {
+                    JOptionPane.showMessageDialog(this, "회원 가입 완료!");
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "회원 가입 실패!", "오류", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "잔액은 숫자로 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+            }
+
+            session.commit();
+        }
     }
 }

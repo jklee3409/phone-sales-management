@@ -16,66 +16,66 @@ public class PhoneDetailViewScreen extends JFrame {
     private PurchaseScreen purchaseScreen;
 
     public PhoneDetailViewScreen(int phoneId, UserDto user, StockViewScreen stockViewScreen, PurchaseScreen purchaseScreen, boolean isPurchaseMode, boolean isAdmin) {
-        SqlSession session = MybatisManager.getSession();
+        try (SqlSession session = MybatisManager.getSession()){
 
-        setTitle("스마트폰 상세 정보");
-        setSize(420, 450);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+            setTitle("스마트폰 상세 정보");
+            setSize(420, 450);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
 
-        PhoneDto phone = MybatisManager.getPhoneDao(session).getPhone(phoneId);
-        PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao(session).getPhoneDetail(phoneId);
-        this.purchaseScreen = purchaseScreen;
+            PhoneDto phone = MybatisManager.getPhoneDao(session).getPhone(phoneId);
+            PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao(session).getPhoneDetail(phoneId);
+            this.purchaseScreen = purchaseScreen;
 
-        JPanel container = createContainer(phone, phoneDetail);
+            JPanel container = createContainer(phone, phoneDetail);
 
-        if (isPurchaseMode) {
-            JButton purchaseButton = new JButton("구매하기");
-            purchaseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            purchaseButton.addActionListener(e -> purchasePhone(phone, user));
+            if (isPurchaseMode) {
+                JButton purchaseButton = new JButton("구매하기");
+                purchaseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                purchaseButton.addActionListener(e -> purchasePhone(phone, user));
+                container.add(Box.createRigidArea(new Dimension(0, 10)));
+                container.add(purchaseButton);
+            }
+
+            if (isAdmin) {
+                JButton editButton = new JButton("수정 및 삭제");
+                editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id(), stockViewScreen,this));
+                container.add(Box.createRigidArea(new Dimension(0, 10)));
+                container.add(editButton);
+            }
+
+            JButton closeButton = new JButton("닫기");
+            closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            closeButton.addActionListener(e -> dispose());
             container.add(Box.createRigidArea(new Dimension(0, 10)));
-            container.add(purchaseButton);
+            container.add(closeButton);
+
+            add(container);
+            setVisible(true);
         }
-
-        if (isAdmin) {
-            JButton editButton = new JButton("수정 및 삭제");
-            editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            editButton.addActionListener(e -> new PhoneEditScreen(phone.getPhone_id(), stockViewScreen,this));
-            container.add(Box.createRigidArea(new Dimension(0, 10)));
-            container.add(editButton);
-        }
-
-        JButton closeButton = new JButton("닫기");
-        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        closeButton.addActionListener(e -> dispose());
-        container.add(Box.createRigidArea(new Dimension(0, 10)));
-        container.add(closeButton);
-
-        add(container);
-        setVisible(true);
-        session.close();
     }
 
     public void updatePhoneDetail(PhoneDto phone) {
-        SqlSession session = MybatisManager.getSession();
+        try (SqlSession session = MybatisManager.getSession()){
 
-        getContentPane().removeAll(); // 기존 UI 제거 후 재구성
-        repaint();
-        revalidate();
+            getContentPane().removeAll(); // 기존 UI 제거 후 재구성
+            repaint();
+            revalidate();
 
-        PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao(session).getPhoneDetail(phone.getPhone_id());
-        JPanel container = createContainer(phone, phoneDetail);
+            PhoneDetailDto phoneDetail = MybatisManager.getPhoneDetailDao(session).getPhoneDetail(phone.getPhone_id());
+            JPanel container = createContainer(phone, phoneDetail);
 
-        JButton closeButton = new JButton("닫기");
-        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        closeButton.addActionListener(e -> dispose());
-        container.add(Box.createRigidArea(new Dimension(0, 10)));
-        container.add(closeButton);
+            JButton closeButton = new JButton("닫기");
+            closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            closeButton.addActionListener(e -> dispose());
+            container.add(Box.createRigidArea(new Dimension(0, 10)));
+            container.add(closeButton);
 
-        getContentPane().add(container);
-        repaint();
-        revalidate();
-        session.close();
+            getContentPane().add(container);
+            repaint();
+            revalidate();
+        }
     }
 
     private JPanel createContainer(PhoneDto phone, PhoneDetailDto phoneDetail) {
@@ -121,41 +121,42 @@ public class PhoneDetailViewScreen extends JFrame {
 
 
     private void purchasePhone(PhoneDto phone, UserDto user) {
-        SqlSession session = MybatisManager.getSession();
 
-        if (user.getAmount() < phone.getPrice()) {
-            JOptionPane.showMessageDialog(this, "잔액이 부족합니다!", "오류", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        try (SqlSession session = MybatisManager.getSession()){
 
-        int confirm = JOptionPane.showConfirmDialog(this, "이 스마트폰을 구매하시겠습니까?", "구매 확인", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        // 주문 생성
-        int orderResult = MybatisManager.getOrderDao(session).addOrder(user.getUser_id(), phone.getPhone_id(), phone.getPrice());
-        if (orderResult > 0) {
-
-            // 잔액 차감
-            user.setAmount(user.getAmount() - phone.getPrice());
-            MybatisManager.getUserDao(session).updateAmount(user.getUser_id(), user.getAmount());
-
-            // 재고 감소
-            MybatisManager.getPhoneDao(session).updateStock(phone.getPhone_id(), phone.getStock() - 1);
-
-            session.commit(); //구매 성공 시 변경 사항 commit
-
-            // ui 업데이트
-            if(purchaseScreen != null) {
-                purchaseScreen.updateUI();
+            if (user.getAmount() < phone.getPrice()) {
+                JOptionPane.showMessageDialog(this, "잔액이 부족합니다!", "오류", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-        } else {
-            JOptionPane.showMessageDialog(this, "구매 실패!", "오류", JOptionPane.ERROR_MESSAGE);
-        }
+            int confirm = JOptionPane.showConfirmDialog(this, "이 스마트폰을 구매하시겠습니까?", "구매 확인", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) return;
 
-        JOptionPane.showMessageDialog(this, "구매 완료!");
-        dispose();
-        session.close();
+            // 주문 생성
+            int orderResult = MybatisManager.getOrderDao(session).addOrder(user.getUser_id(), phone.getPhone_id(), phone.getPrice());
+            if (orderResult > 0) {
+
+                // 잔액 차감
+                user.setAmount(user.getAmount() - phone.getPrice());
+                MybatisManager.getUserDao(session).updateAmount(user.getUser_id(), user.getAmount());
+
+                // 재고 감소
+                MybatisManager.getPhoneDao(session).updateStock(phone.getPhone_id(), phone.getStock() - 1);
+
+                session.commit(); //구매 성공 시 변경 사항 commit
+
+                // ui 업데이트
+                if(purchaseScreen != null) {
+                    purchaseScreen.updateUI();
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "구매 실패!", "오류", JOptionPane.ERROR_MESSAGE);
+            }
+
+            JOptionPane.showMessageDialog(this, "구매 완료!");
+            dispose();
+        }
     }
 }
 

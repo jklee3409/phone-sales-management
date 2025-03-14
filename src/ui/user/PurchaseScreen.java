@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Vector;
 import org.apache.ibatis.session.SqlSession;
 import ui.common.PhoneDetailViewScreen;
+import ui.util.UtilMethod;
 
 public class PurchaseScreen extends JFrame {
     private UserDto user;
@@ -21,52 +22,52 @@ public class PurchaseScreen extends JFrame {
     private UserMainScreen userMainScreen;
 
     public PurchaseScreen(String username, UserMainScreen userMainScreen) {
-        SqlSession session = MybatisManager.getSession();
+        try (SqlSession session = MybatisManager.getSession()) {
 
-        this.user = MybatisManager.getUserDao(session).findUser(username);
-        this.userMainScreen = userMainScreen;
+            this.user = MybatisManager.getUserDao(session).findUser(username);
+            this.userMainScreen = userMainScreen;
 
-        setTitle("스마트폰 구매");
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+            setTitle("스마트폰 구매");
+            setSize(600, 400);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel();
-        balanceLabel = new JLabel("잔액: " + user.getAmount() + "원");
-        panel.add(balanceLabel);
-        add(panel, "North");
+            JPanel panel = new JPanel();
+            balanceLabel = new JLabel("잔액: " + user.getAmount() + "원");
+            panel.add(balanceLabel);
+            add(panel, "North");
 
-        String[] columnNames = {"ID", "모델명", "브랜드", "출시일", "가격", "재고"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // 셀 수정 방지
-            }
-        };
+            String[] columnNames = {"ID", "모델명", "브랜드", "출시일", "가격", "재고"};
+            tableModel = new DefaultTableModel(columnNames, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false; // 셀 수정 방지
+                }
+            };
 
-        phoneTable = new JTable(tableModel);
-        phoneTable.setDefaultEditor(Object.class, null);
-        JScrollPane scrollPane = new JScrollPane(phoneTable);
-        add(scrollPane);
+            phoneTable = new JTable(tableModel);
+            phoneTable.setDefaultEditor(Object.class, null);
+            JScrollPane scrollPane = new JScrollPane(phoneTable);
+            add(scrollPane);
 
-        loadPhoneData();
+            loadPhoneData();
 
-        // 더블 클릭 시 상세 정보 창 띄우기
-        phoneTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int selectedRow = phoneTable.getSelectedRow();
-                    if (selectedRow != -1) {
-                        int phoneId = (int) tableModel.getValueAt(selectedRow, 0);
-                        new PhoneDetailViewScreen(phoneId, user, null,PurchaseScreen.this, true, false); // 구매 가능 모드, 관리자 아님
+            // 더블 클릭 시 상세 정보 창 띄우기
+            phoneTable.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        int selectedRow = phoneTable.getSelectedRow();
+                        if (selectedRow != -1) {
+                            int phoneId = (int) tableModel.getValueAt(selectedRow, 0);
+                            new PhoneDetailViewScreen(phoneId, user, null,PurchaseScreen.this, true, false); // 구매 가능 모드, 관리자 아님
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        setVisible(true);
-        session.close();
+            setVisible(true);
+        }
     }
 
     public void updateUI() {
@@ -79,26 +80,19 @@ public class PurchaseScreen extends JFrame {
     }
 
     private void loadPhoneData() {
-        SqlSession session = MybatisManager.getSession();
 
-        List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
+        try(SqlSession session = MybatisManager.getSession()) {
 
-        for (PhoneDto phone : phones) {
-            if (phone.getStock() > 0) { // 재고가 있는 제품만 표시
-                Vector<Object> row = new Vector<>();
+            List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
 
-                row.add(phone.getPhone_id());
-                row.add(phone.getModel());
-                row.add(phone.getBrand());
-                row.add(phone.getReleased_at());
-                row.add(phone.getPrice());
-                row.add(phone.getStock());
-
-                tableModel.addRow(row);
+            for (PhoneDto phone : phones) {
+                if (phone.getStock() > 0) { // 재고가 있는 제품만 표시
+                    Vector<Object> row = UtilMethod.loadRow(phone);
+                    tableModel.addRow(row);
+                }
             }
         }
-
-        session.close();
     }
+
 }
 

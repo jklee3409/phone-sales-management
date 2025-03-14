@@ -57,34 +57,33 @@ public class LoginScreen extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SqlSession session = MybatisManager.getSession();
 
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
+            try (SqlSession session = MybatisManager.getSession()) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
 
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(LoginScreen.this, "아이디와 비밀번호를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-                return;
+                if (username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(LoginScreen.this, "아이디와 비밀번호를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 1. 관리자 계정 체크
+                if (username.equals("root") && password.equals("1234")) {
+                    JOptionPane.showMessageDialog(LoginScreen.this, "관리자 로그인 성공!");
+                    dispose();  // 현재 창 닫기
+                    new AdminScreen();  // 관리자 화면으로 이동
+                    return;
+                }
+
+                // 2. 일반 사용자 인증 (DB 확인)
+                if (MybatisManager.getUserDao(session).authenticateUser(username, password)) {
+                    JOptionPane.showMessageDialog(LoginScreen.this, "로그인 성공!");
+                    dispose();  // 현재 창 닫기
+                    new UserMainScreen(username);  // 유저 화면으로 이동
+                } else {
+                    JOptionPane.showMessageDialog(LoginScreen.this, "로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
+                }
             }
-
-            // 1. 관리자 계정 체크
-            if (username.equals("root") && password.equals("1234")) {
-                JOptionPane.showMessageDialog(LoginScreen.this, "관리자 로그인 성공!");
-                dispose();  // 현재 창 닫기
-                new AdminScreen();  // 관리자 화면으로 이동
-                return;
-            }
-
-            // 2. 일반 사용자 인증 (DB 확인)
-            if (MybatisManager.getUserDao(session).authenticateUser(username, password)) {
-                JOptionPane.showMessageDialog(LoginScreen.this, "로그인 성공!");
-                dispose();  // 현재 창 닫기
-                new UserMainScreen(username);  // 유저 화면으로 이동
-            } else {
-                JOptionPane.showMessageDialog(LoginScreen.this, "로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
-            }
-
-            session.close();
         }
     }
 }

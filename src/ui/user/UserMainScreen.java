@@ -12,35 +12,36 @@ public class UserMainScreen extends JFrame {
     private JLabel balanceLabel;
 
     public UserMainScreen(String username) {
-        SqlSession session = MybatisManager.getSession();
-        this.user = MybatisManager.getUserDao(session).findUser(username);
+        try (SqlSession session = MybatisManager.getSession()){
 
-        setTitle("메인 메뉴");
-        setSize(400, 200);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+            this.user = MybatisManager.getUserDao(session).findUser(username);
 
-        // 🔹 사용자 잔액 표시
-        balanceLabel = new JLabel("잔액: " + user.getAmount() + "원", SwingConstants.CENTER);
-        balanceLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-        add(balanceLabel, BorderLayout.NORTH);
+            setTitle("메인 메뉴");
+            setSize(400, 200);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
+            setLayout(new BorderLayout());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10));
+            // 사용자 잔액 표시
+            balanceLabel = new JLabel("잔액: " + user.getAmount() + "원", SwingConstants.CENTER);
+            balanceLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
+            add(balanceLabel, BorderLayout.NORTH);
 
-        JButton purchaseButton = new JButton("구매하기");
-        purchaseButton.addActionListener(e -> new PurchaseScreen(user.getUsername(), this));
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new GridLayout(2, 1, 10, 10));
 
-        JButton updateBalanceButton = new JButton("잔액 충전");
-        updateBalanceButton.addActionListener(e -> new BalanceUpdateScreen(user, this));
+            JButton purchaseButton = new JButton("구매하기");
+            purchaseButton.addActionListener(e -> new PurchaseScreen(user.getUsername(), this));
 
-        buttonPanel.add(purchaseButton);
-        buttonPanel.add(updateBalanceButton);
+            JButton updateBalanceButton = new JButton("잔액 충전");
+            updateBalanceButton.addActionListener(e -> new BalanceUpdateScreen(user, this));
 
-        add(buttonPanel, BorderLayout.CENTER);
-        setVisible(true);
-        session.close();
+            buttonPanel.add(purchaseButton);
+            buttonPanel.add(updateBalanceButton);
+
+            add(buttonPanel, BorderLayout.CENTER);
+            setVisible(true);
+        }
     }
 
     // UI 잔액 업데이트

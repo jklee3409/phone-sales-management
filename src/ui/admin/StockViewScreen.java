@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import org.apache.ibatis.session.SqlSession;
 import ui.common.PhoneDetailViewScreen;
+import ui.util.UtilMethod;
 
 public class StockViewScreen extends JFrame {
     private DefaultTableModel tableModel;
@@ -83,35 +84,30 @@ public class StockViewScreen extends JFrame {
     }
 
     private void loadStockData() {
-        SqlSession session = MybatisManager.getSession();
 
-        tableModel.setRowCount(0);
-        List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
+        try (SqlSession session = MybatisManager.getSession()){
+            tableModel.setRowCount(0);
+            List<PhoneDto> phones = MybatisManager.getPhoneDao(session).listPhone();
 
-        loadData(phones);
-        session.close();
+            loadData(phones);
+        }
+
     }
 
     private void filterStockData(String model) {
-        SqlSession session = MybatisManager.getSession();
-        tableModel.setRowCount(0);
 
-        List<PhoneDto> filteredPhones = MybatisManager.getPhoneDao(session).searchPhoneList(model);
+        try (SqlSession session = MybatisManager.getSession()) {
+            tableModel.setRowCount(0);
 
-        loadData(filteredPhones);
-        session.close();
+            List<PhoneDto> filteredPhones = MybatisManager.getPhoneDao(session).searchPhoneList(model);
+
+            loadData(filteredPhones);
+        }
     }
 
     private void loadData(List<PhoneDto> filteredPhones) {
         for (PhoneDto phone : filteredPhones) {
-            Vector<Object> row = new Vector<>();
-
-            row.add(phone.getPhone_id());
-            row.add(phone.getModel());
-            row.add(phone.getBrand());
-            row.add(phone.getReleased_at());
-            row.add(phone.getPrice());
-            row.add(phone.getStock());
+            Vector<Object> row = UtilMethod.loadRow(phone);
 
             tableModel.addRow(row);
         }

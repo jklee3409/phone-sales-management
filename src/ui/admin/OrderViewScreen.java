@@ -36,19 +36,25 @@ public class OrderViewScreen extends JFrame {
     }
 
     private void loadOrderData(DefaultTableModel tableModel) {
-        SqlSession session = MybatisManager.getSession();
-        List<OrderDto> orders = MybatisManager.getOrderDao(session).listOrders();
 
-        for (OrderDto order : orders) {
-            Vector<Object> row = new Vector<>();
-            row.add(order.getOrder_id());
-            row.add(order.getUser_id());
-            row.add(order.getPhone_id());
-            row.add(order.getSale_price());
-            row.add(order.getOrder_date());
-            tableModel.addRow(row);
+        try(SqlSession session = MybatisManager.getSession()) {
+
+            OrderDao orderDao = MybatisManager.getOrderDao(session);
+            List<OrderDto> orders = orderDao.listOrders();
+
+            for (OrderDto order : orders) {
+                Vector<Object> row = new Vector<>();
+                row.add(order.getOrder_id());
+                row.add(order.getUser_id());
+                row.add(order.getPhone_id());
+                row.add(order.getSale_price());
+                row.add(order.getOrder_date());
+                tableModel.addRow(row);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "주문 데이터를 불러오는 데 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
         }
-
-        session.close();
     }
 }
